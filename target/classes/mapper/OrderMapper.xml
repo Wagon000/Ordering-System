@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.orderingsystem.mapper.OrderMapper">
+
+    <resultMap id="OrderResultMap" type="Order">
+        <id column="id" property="id"/>
+        <result column="time" property="time"/>
+        <result column="us_id" property="usId"/>
+        <result column="sum" property="sum"/>
+        <result column="star" property="star"/>
+        <result column="or_status" property="orStatus"/>
+        <result column="order_type" property="orderType"/>
+        <result column="table_number" property="tableNumber"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+    
+    <!-- 添加订单 -->
+    <insert id="insertNewOrder" useGeneratedKeys="true" keyProperty="id" >
+        insert into orders(us_id, sum) values(#{usId}, #{sum});
+    </insert>
+
+    <!-- 查询未支付订单 -->
+    <select id="selectUnpaidOder" resultMap="OrderResultMap">
+        select *
+        from orders
+        where us_id = #{id}
+          and or_status = "-1";
+    </select>
+
+    <!-- 根据用户ID查询订单 -->
+    <select id="selectOrderById" resultMap="OrderResultMap">
+        select *
+        from orders
+        where us_id = #{id};
+    </select>
+
+    <!-- 查询所有订单 -->
+    <select id="selectAllOrder" resultMap="OrderResultMap">
+        select * from orders;
+    </select>
+    
+    <!-- 更新订单评分 -->
+    <update id="orderStarById">
+        update orders
+        set star = #{starNumber}
+        where id = #{id};
+    </update>
+
+    <!-- 更新订单状态 -->
+    <update id="updateOrderStatusById">
+        update orders
+        set or_status = 1 
+        where id = #{id};
+    </update>
+
+    <!-- 兼容其他方法名 -->
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO orders (time, us_id, sum, star, or_status, order_type, table_number, phone, address, remark)
+        VALUES (NOW(), #{usId}, #{sum}, #{star}, #{orStatus}, #{orderType}, #{tableNumber}, #{phone}, #{address}, #{remark})
+    </insert>
+    
+    <!-- 查询总记录数 -->
+    <select id="selectTotalCount" resultType="Long">
+        SELECT COUNT(*) FROM orders
+    </select>
+    
+    <!-- 分页查询 -->
+    <select id="selectByPage" resultMap="OrderResultMap">
+        SELECT * FROM orders ORDER BY time DESC LIMIT #{begin}, #{size}
+    </select>
+    
+    <!-- 根据用户ID查询订单 -->
+    <select id="selectByUserId" resultMap="OrderResultMap">
+        SELECT * FROM orders WHERE us_id = #{userId} ORDER BY time DESC
+    </select>
+    
+    <!-- 更新订单状态 -->
+    <update id="updateStatus">
+        UPDATE orders SET or_status = #{status} WHERE id = #{id}
+    </update>
+    
+    <!-- 更新订单评分 -->
+    <update id="updateStar">
+        UPDATE orders SET star = #{star} WHERE id = #{id}
+    </update>
+
+    <!-- 获取已占用的桌号 -->
+    <select id="selectOccupiedTables" resultType="java.lang.Integer">
+        SELECT table_number 
+        FROM orders 
+        WHERE or_status = -1 
+        AND order_type = 1 
+        AND table_number IS NOT NULL
+    </select>
+
+    <!-- 更新订单桌号 -->
+    <update id="updateTableNumber">
+        UPDATE orders 
+        SET table_number = #{tableNumber}
+        WHERE id = #{id}
+    </update>
+</mapper>

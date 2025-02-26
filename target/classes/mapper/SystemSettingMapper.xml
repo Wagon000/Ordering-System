@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.orderingsystem.mapper.SystemSettingMapper">
+
+    <resultMap id="settingResultMap" type="SystemSetting">
+        <id column="id" property="id"/>
+        <result column="setting_key" property="settingKey"/>
+        <result column="setting_value" property="settingValue"/>
+        <result column="description" property="description"/>
+    </resultMap>
+    
+    <!-- 查询所有系统设置 -->
+    <select id="selectAll" resultMap="settingResultMap">
+        SELECT * FROM system_settings
+    </select>
+    
+    <!-- 根据键查询设置 -->
+    <select id="selectByKey" resultMap="settingResultMap">
+        SELECT * FROM system_settings WHERE setting_key = #{key}
+    </select>
+    
+    <!-- 更新设置值 -->
+    <update id="updateValue">
+        UPDATE system_settings 
+        SET setting_value = #{value}
+        WHERE setting_key = #{key}
+    </update>
+</mapper> 

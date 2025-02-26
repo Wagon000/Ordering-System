@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.orderingsystem.mapper.FoodMapper">
+
+    <resultMap id="foodResultMap" type="Food">
+        <id column="id" property="id"/>
+        <result column="fd_name" property="fdName"/>
+        <result column="intro" property="intro"/>
+        <result column="price" property="price"/>
+        <result column="photo" property="photo"/>
+        <result column="fd_status" property="fdStatus"/>
+    </resultMap>
+
+    <update id="updateFood">
+        update food set fd_name=#{foodName},intro=#{intro},price=#{price},photo=#{photo},fd_status=#{status}
+where id = #{id};
+    </update>
+    <insert id="insertNewFood" useGeneratedKeys="true" keyProperty="id">
+        insert into food(fd_name,intro,price,photo,fd_status) values(#{foodName},#{intro},#{price},#{photo},#{status});
+    </insert>
+
+    <delete id="deleteFood">
+        delete from food where id =#{id};
+
+    </delete>
+    <update id="foodStatusChange" >
+        update food set fd_status = #{status} where id=#{id};
+    </update>
+
+
+    <select id="selectAll" resultMap="foodResultMap">
+        select *
+        from food;
+    </select>
+
+    <select id="selectTotalCount" resultType="Long">
+        SELECT COUNT(*) FROM food
+    </select>
+    
+    <select id="selectByPage" resultMap="foodResultMap">
+        SELECT * FROM food LIMIT #{begin}, #{size}
+    </select>
+
+    <!--条件查询分页-->
+
+    <select id="selectByPageAndCondition" resultMap="foodResultMap">
+        select * from food
+        <where>
+            <if test="foodName!=null and foodName!=''">
+                and fd_name like #{foodName}
+            </if>
+            <if test="minPrice != 0">
+                and price>#{minPrice}
+            </if>
+            <if test="maxPrice != 0">
+                and price
+                <![CDATA[
+    <
+    ]]>
+                #{maxPrice}
+            </if>
+        </where>
+        limit #{begin}, #{size};
+    </select>
+    <select id="selectTotalCountByCondition" resultType="int">
+        select count(*) from food
+        <where>
+            <if test="foodName!=null and foodName!=''">
+                and fd_name like #{foodName}
+            </if>
+            <if test="minPrice != 0">
+                and price>#{minPrice}
+            </if>
+            <if test="maxPrice != 0">
+                and price
+                <![CDATA[
+    <
+    ]]>
+                #{maxPrice}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询所有食品 -->
+    
+    <!-- 添加食品 -->
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO food (fd_name, intro, price, photo, fd_status)
+        VALUES (#{fdName}, #{intro}, #{price}, #{photo}, #{fdStatus})
+    </insert>
+    
+    <!-- 根据ID删除食品 -->
+    <delete id="deleteById">
+        DELETE FROM food WHERE id = #{id}
+    </delete>
+    
+    <!-- 根据ID查询食品 -->
+    <select id="selectById" resultMap="foodResultMap">
+        SELECT * FROM food WHERE id = #{id}
+    </select>
+    
+    <!-- 更新食品信息 -->
+    <update id="update">
+        UPDATE food
+        <set>
+            <if test="fdName != null">fd_name = #{fdName},</if>
+            <if test="intro != null">intro = #{intro},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="photo != null">photo = #{photo},</if>
+            <if test="fdStatus != null">fd_status = #{fdStatus},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 更新食品状态 -->
+    <update id="updateStatus">
+        UPDATE food SET fd_status = #{status} WHERE id = #{id}
+    </update>
+
+</mapper>

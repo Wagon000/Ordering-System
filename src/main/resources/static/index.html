@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点餐系统API文档</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>点餐系统API文档</h1>
+        <div class="center">
+            <p>点击下面的按钮访问Swagger UI文档：</p>
+            <a href="/api/swagger-ui.html" class="btn">打开Swagger UI</a>
+        </div>
+        <div class="center">
+            <p>或者直接访问API：</p>
+            <a href="/api/food" class="btn">食品列表</a>
+            <a href="/api/user/login" class="btn">用户登录</a>
+        </div>
+        <div class="center">
+            <p>API基础URL：<code>http://localhost:8081/api</code></p>
+            <p>OpenAPI文档：<code>http://localhost:8081/api/v3/api-docs</code></p>
+        </div>
+    </div>
+    <script>
+        // 自动重定向到Swagger UI
+        setTimeout(function() {
+            window.location.href = "/api/swagger-ui.html";
+        }, 2000);
+    </script>
+</body>
+</html> 

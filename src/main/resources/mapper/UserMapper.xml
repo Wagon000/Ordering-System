@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.orderingsystem.mapper.UserMapper">
+
+    <!-- ResultMap定义，用于将数据库列与Java对象属性进行映射 -->
+    <resultMap id="userResultMap" type="User">
+        <id column="id" property="id"/>
+        <result column="us_name" property="usName"/>
+        <result column="psd" property="psd"/>
+        <result column="role" property="role"/>
+        <result column="phone" property="phone"/>
+        <result column="address" property="address"/>
+        <result column="balance" property="balance"/>
+        <result column="total_consumption" property="totalConsumption"/>
+    </resultMap>
+
+    <!-- 根据用户名和密码查询用户 -->
+    <select id="login" resultMap="userResultMap">
+        SELECT * FROM us WHERE us_name = #{username} AND psd = #{password}
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="selectAll" resultMap="userResultMap">
+        SELECT *
+        FROM us
+    </select>
+
+    <!-- 根据用户名查询用户 -->
+    <select id="selectByUsername" resultMap="userResultMap">
+        SELECT * FROM us WHERE us_name = #{username}
+    </select>
+
+    <!-- 根据条件查询用户 -->
+    <select id="selectByCondition" resultMap="userResultMap">
+        SELECT * FROM us
+        <where>
+            <if test="username != null and username != ''">
+                AND us_name = #{username}
+            </if>
+            <if test="role >= 0">
+                AND role >= #{role}
+            </if>
+            <!-- 添加其他条件查询 -->
+        </where>
+    </select>
+
+    <!-- 条件查询分页 -->
+    <select id="selectByPageAndCondition" resultMap="userResultMap">
+        select * from us
+        <where>
+            <if test="userName!=null and userName!=''">
+                and us_name like #{userName}
+            </if>
+        </where>
+        limit #{begin}, #{size};
+    </select>
+    
+    <!-- 条件查询总记录数 -->
+    <select id="selectTotalCountByCondition" resultType="int">
+        select count(*) from us
+        <where>
+            <if test="userName!=null and userName!=''">
+                and us_name like #{userName}
+            </if>
+        </where>
+    </select>
+    
+    <!-- 查询总记录数 -->
+    <select id="selectTotalCount" resultType="Long">
+        SELECT COUNT(*) FROM us
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="selectByPage" resultMap="userResultMap">
+        SELECT * FROM us LIMIT #{begin}, #{size}
+    </select>
+
+    <!-- 更新用户信息 -->
+    <update id="update">
+        UPDATE us
+        <set>
+            <if test="usName != null">us_name = #{usName},</if>
+            <if test="psd != null">psd = #{psd},</if>
+            <if test="role != null">role = #{role},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="balance != null">balance = #{balance},</if>
+            <if test="totalConsumption != null">total_consumption = #{totalConsumption},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    
+    <!-- 添加新用户 -->
+    <insert id="insertNewUser" useGeneratedKeys="true" keyProperty="id">
+        insert into us(us_name, psd, phone, address) 
+        values(#{userName}, #{password}, #{phone}, #{address});
+    </insert>
+
+    <!-- 删除用户 -->
+    <delete id="deleteUser">
+        delete from us where id = #{id};
+    </delete>
+    
+    <!-- 兼容其他方法名 -->
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO us (us_name, psd, role, phone, address, balance, total_consumption)
+        VALUES (#{usName}, #{psd}, #{role}, #{phone}, #{address}, #{balance}, #{totalConsumption})
+    </insert>
+
+    <!-- 根据ID删除用户 -->
+    <delete id="deleteById">
+        DELETE FROM us WHERE id = #{id}
+    </delete>
+    
+    <!-- 根据ID查询用户 -->
+    <select id="selectById" resultMap="userResultMap">
+        SELECT * FROM us WHERE id = #{id}
+    </select>
+
+</mapper>

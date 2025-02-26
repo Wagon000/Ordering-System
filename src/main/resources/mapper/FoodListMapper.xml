@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.orderingsystem.mapper.FoodListMapper">
+
+    <resultMap id="foodListResultMap" type="FoodList">
+        <result column="fd_id" property="fdId"/>
+        <result column="or_id" property="orId"/>
+        <result column="fd_name" property="fdName"/>
+        <result column="price" property="price"/>
+        <result column="count" property="count"/>
+        <result column="sum" property="sum"/>
+    </resultMap>
+    <insert id="insertFoodLists">
+        insert into foodlist(fd_id, or_id, fd_name, price, count, sum) VALUES
+        <foreach collection="foodLists" item="foodList" separator=",">
+            (#{foodList.fdId}, #{foodList.orId}, #{foodList.fdName}, #{foodList.price}, #{foodList.count}, #{foodList.sum})
+        </foreach>
+    </insert>
+    <select id="selectFoodListByOrderId" resultMap="foodListResultMap">
+        select * from foodlist where or_id = #{orderId};
+    </select>
+
+    <!-- 添加订单详情 -->
+    <insert id="add">
+        INSERT INTO foodlist (fd_id, or_id, count)
+        VALUES (#{fdId}, #{orId}, #{count})
+    </insert>
+    
+    <!-- 根据订单ID查询订单详情 -->
+    <select id="selectByOrderId" resultType="FoodList">
+        SELECT f.*, fo.fd_name as fdName, fo.price as price, fo.photo as photo
+        FROM foodlist f
+        LEFT JOIN food fo ON f.fd_id = fo.id
+        WHERE f.or_id = #{orderId}
+    </select>
+    
+    <!-- 根据订单ID删除订单详情 -->
+    <delete id="deleteByOrderId">
+        DELETE FROM foodlist WHERE or_id = #{orderId}
+    </delete>
+    
+    <!-- 查询某个食品的销售数量 -->
+    <select id="selectSaleCountByFoodId" resultType="Integer">
+        SELECT SUM(count) FROM foodlist WHERE fd_id = #{foodId}
+    </select>
+    
+    <!-- 查询销量前N的食品ID和销售数量 -->
+    <select id="selectTopSales" resultType="Map">
+        SELECT fd_id as foodId, SUM(count) as saleCount
+        FROM foodlist
+        GROUP BY fd_id
+        ORDER BY saleCount DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 批量添加订单明细 -->
+    <insert id="addBatch">
+        INSERT INTO foodlist (fd_id, or_id, fd_name, price, count, sum) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.fdId}, #{item.orId}, #{item.fdName}, #{item.price}, #{item.count}, #{item.sum})
+        </foreach>
+    </insert>
+
+</mapper>

@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Ordering-System">
+    <output-path>$PROJECT_DIR$/out/artifacts/Ordering_System</output-path>
+    <root id="archive" name="Ordering-System.war" />
+  </artifact>
+</component>
